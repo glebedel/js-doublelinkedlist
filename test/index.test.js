@@ -78,7 +78,7 @@ describe('gets & removes nodes', () => {
     expect(instance.getAt(0)).toBe(firstNode);
     expect(instance.getAt(1)).toBe(secondNode);
   });
-  it('gets null if node was removed', ()=>{
+  // it('gets null if node was removed', () => {
 
-  });
+  // });
 });

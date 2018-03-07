@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Node element of our double linked list
  * Contains a left pointer & right pointer as well as data property
