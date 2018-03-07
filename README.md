@@ -1,7 +1,7 @@
 # js-doublelinkedlist
 
 [![NPM version](https://img.shields.io/npm/v/js-doublelinkedlist.svg?style=flat-square)](https://npmjs.org/package/js-doublelinkedlist)
-[![Build Status](https://img.shields.io/travis/glebedel/node-lru/master.svg?style=flat-square)](https://travis-ci.org/glebedel/node-lru) [![Coverage Status](https://img.shields.io/codecov/c/github/glebedel/node-lru/master.svg?style=flat-square)](https://codecov.io/gh/glebedel/node-lru/branch/master)
+[![Build Status](https://img.shields.io/travis/glebedel/node-lru/master.svg?style=flat-square)](https://travis-ci.org/glebedel/js-doublelinkedlist) [![Coverage Status](https://img.shields.io/codecov/c/github/glebedel/js-doublelinkedlist/master.svg?style=flat-square)](https://codecov.io/gh/glebedel/js-doublelinkedlist/branch/master)
 
 simple LRU cache implementation in nodejs
 
