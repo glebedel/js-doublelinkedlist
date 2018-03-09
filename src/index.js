@@ -1,18 +1,19 @@
 /**
  * Node element of our double linked list
  * Contains a left pointer & right pointer as well as data property
+ * TODO: have a more consistent API (eg consistent return values & consitent names depending on return values being nodes or data)
  * @class Node
  */
 class Node {
   /**
    * Creates an instance of Node.
    * @param {any} data data stored in the node that can be retrieved through linked list method
-   * @param {Object} pointers object containing reference to left and right nodes
+   * @param {Object} [pointers={}] pointers object containing reference to left and right nodes
    * @param {Node} [pointers.left=null] left node reference
    * @param {Node} [pointers.left=null] right node reference
    * @memberof Node
    */
-  constructor(data, { left = null, right = null }) {
+  constructor(data, { left = null, right = null } = {}) {
     this.data = data;
     this.left = left;
     this.right = right;
@@ -27,14 +28,32 @@ class Node {
 class DoubleLinkedList {
   /**
    * Creates an instance of DoubleLinkedList
-   * @param {Node} [head=null] optional reference to head node
+   * adding node(radd, ladd): O(1)
+   * list length retrieval: O(1) - (unless lists' nodes modified outside of class)
+   * getting/removing nodes or nodes' data apart from head/tail (getAt, getDataAt, removeAt, find, findData...): O(n)
+   * @param {Node|Array<Node>} [head=null] optional reference to head node
+   * @param {Object} [param={}] optional parameter object
+   * @param {Class} [param.NodeClass=Node] optional Node Class (Node class' constructor needs to be the same as ${link Node~constructr})
    * @memberof DoubleLinkedList
    */
-  constructor(head = null) {
-    this.head = head;
+  constructor(head = null, { NodeClass = Node } = {}) {
     this.tail = null;
+    this.head = null;
+    this.Node = NodeClass;
     // if head is set then list already has 1 element. Otherwise its empty (0) elements
-    this.length = head === null ? 0 : 1;
+    this.length = 0;
+    // sets the head if node was passed
+    if (head instanceof this.Node) {
+      this.head = head;
+      this.tail = head;
+      this.length += 1;
+      // if an iteratable object was passed for head then consider each array element as new data to be added (in order) to the list
+    } else if (head && typeof head[Symbol.iterator] === 'function') {
+      this.add(...head);
+      // if any head is set to any other value, then consider it as data to be added in list
+    } else if (head) {
+      this.add(head);
+    }
   }
   /**
    * Gets the head of the list
@@ -56,13 +75,14 @@ class DoubleLinkedList {
    * Add data to the left of the list
    * Passed data is added into a new node which becomes the head of the list
    * @param {any} data
+   * @param {...any} optional further datas to add. ladd will be called for each further data passed.
    * @returns {Node} new head (most left member) of the list
    * @memberof DoubleLinkedList
    */
-  ladd(data) {
+  ladd(data, ...otherDatas) {
     const currentHead = this.head;
     // move current head to right of new node
-    this.head = new Node(data, { right: currentHead });
+    this.head = new this.Node(data, { right: currentHead });
     // previous head left reference must be new head node
     if (currentHead) {
       currentHead.left = this.head;
@@ -71,6 +91,10 @@ class DoubleLinkedList {
       this.tail = this.head;
     }
     this.length += 1;
+    // if multiple datas were passed as argument, radd the rest of the datas
+    if (otherDatas.length) {
+      this.ladd(...otherDatas);
+    }
     return this.head;
   }
   /**
@@ -102,12 +126,13 @@ class DoubleLinkedList {
    * Add data to the right of the list
    * Passed data is added into a new node which becomes the tail of the list
    * @param {any} data
+   * @param {...any} optional further datas to add. radd will be called for each further data passed.
    * @returns {Node} new tail (most right) node of the list
    * @memberof DoubleLinkedList
    */
-  radd(data) {
+  radd(data, ...otherDatas) {
     const currentTail = this.tail;
-    this.tail = new Node(data, { left: currentTail });
+    this.tail = new this.Node(data, { left: currentTail });
     // previous tail right reference must be new head node
     if (currentTail) {
       currentTail.right = this.tail;
@@ -117,17 +142,21 @@ class DoubleLinkedList {
     }
     // increase length counter since node was added to list
     this.length += 1;
+    // if multiple datas were passed as argument, ladd the rest of the datas
+    if (otherDatas.length) {
+      this.radd(...otherDatas);
+    }
     return this.tail;
   }
   /**
-   * Sets passed data into a new node and adds node to the right of the list
+   * Sets passed data(s) into a new node and adds node to the right of the list
    * alias to {link DoubleLinkedList~radd}
-   * @param {any} data to be stored into the new node
+   * @param {any} data(s) to be stored into the new node
    * @returns {Node}
    * @memberof DoubleLinkedList
    */
-  add(data) {
-    return this.radd(data);
+  add(...datas) {
+    return this.radd(...datas);
   }
   /**
    * pops head (most right member) of the list
@@ -205,7 +234,15 @@ class DoubleLinkedList {
    */
   remove(node) {
     // don't do anything if passed parameter is not an instance of Node
-    if (!(Node instanceof Node)) {
+    if (node instanceof this.Node) {
+      // reassign head member property if node being removed is the head
+      if (node === this.head) {
+        this.head = node.right;
+      }
+      // reassign tail member property if node being removed is the tail
+      if (node === this.tail) {
+        this.tail = node.left;
+      }
       // check if node to remove got a left reference
       if (node.left) {
         // link its left node to its right
@@ -242,11 +279,17 @@ class DoubleLinkedList {
   map(fn) {
     return [...this.literator()].map(fn);
   }
+  find(comparator) {
+    return this.lfind(comparator);
+  }
   lfind(comparator) {
     return [...this.literator()].find(comparator);
   }
   rfind(comparator) {
     return [...this.riterator()].find(comparator);
+  }
+  findData(comparator) {
+    return this.lfindData(comparator);
   }
   lfindData(data) {
     return [...this.literator()].find(node => node.data === data);
@@ -261,10 +304,19 @@ class DoubleLinkedList {
     return [...this.literator()].filter(node => node.data === data);
   }
   /**
-   * Check if list contains specific data
-   *
+   * Check if list contains a specific node
    * @param {any} data
-   * @returns {Boolean} whether or not list has a node that contains specified data
+   * @returns {Boolean} true or false
+   * @memberof DoubleLinkedList
+   */
+  hasNode(node) {
+    // retrieves an array of all Nodes' data presents in the list
+    return [...this.literator()].includes(node);
+  }
+  /**
+   * Check if list contains specific data
+   * @param {any} data
+   * @returns {Boolean} true or false
    * @memberof DoubleLinkedList
    */
   has(data) {
@@ -273,8 +325,40 @@ class DoubleLinkedList {
     return values.includes(data);
   }
   /**
+   * Empties the list (resets the `head` & `tail` to `null` and `length` to `0`)
+   * @memberof DoubleLinkedList
+   */
+  empty() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+  /**
+   * recalculate the length of the linked list and re-set the tail (loops from the left to do this therefore)
+   * this normaly isn't necessary unless list's nodes left/right pointers were modified without using the DoubleLinkedList available methods
+   * @returns {Number} difference between old length and recalculated length (negative number means new length > old length)
+   * @memberof DoubleLinkedList
+   */
+  reset() {
+    const oldLength = this.length;
+    const nodes = [...this.literator()];
+    this.tail = nodes[nodes.length - 1] || null;
+    this.length = nodes.length;
+    return this.length - oldLength;
+  }
+  /**
+   * swap nodes' data at indices indexa & indexb
+   * @param {number} indexa
+   * @param {number} indexb
+   * @memberof DoubleLinkedList
+   */
+  swapDataAt(indexa, indexb) {
+    const nodea = this.getAt(indexa);
+    const nodeb = this.getAt(indexb);
+    this.constructor.swapData(nodea, nodeb);
+  }
+  /**
    * swap nodes at indices indexa & indexb
-   *
    * @param {number} indexa
    * @param {number} indexb
    * @memberof DoubleLinkedList
@@ -282,46 +366,124 @@ class DoubleLinkedList {
   swapAt(indexa, indexb) {
     const nodea = this.getAt(indexa);
     const nodeb = this.getAt(indexb);
-    this.constructor.swap(nodea, nodeb);
+    this.swap(nodea, nodeb);
   }
   /**
-   * see {DoubleLinkedList.swap}
-   *
-   * @param {any} a
-   * @param {any} b
+   * Swap two nodes' data within the list
+   * assigns each nodes' data property to the other one's
+   * @static
+   * @param {Node} nodea node to swap
+   * @param {Node} nodeb node to swap
    * @memberof DoubleLinkedList
    */
-  swap(a, b) {
-    this.constructor.swap(a, b);
+  swapData(a, b) {
+    return this.constructor.swapData(a, b);
   }
   /**
-   * recalculate the length of the linked list
-   * this normaly isn't necessary unless list's nodes left/right pointers were modified without using the DoubleLinkedList available methods
-   * @returns {Number} difference between old length and recalculated length (negative number means new length > old length)
+   * Swap two nodes' data
+   * assigns each nodes' data property to the other one's
+   * @static
+   * @param {Node} nodea node to swap
+   * @param {Node} nodeb node to swap
    * @memberof DoubleLinkedList
    */
-  resetLength() {
-    const oldLength = this.length;
-    this.length = [...this.literator()].length;
-    return this.length - oldLength;
+  static swapData(a, b) {
+    if (this.isNode(a) && this.isNode(b)) {
+      const tempData = a.data;
+      a.data = b.data;
+      b.data = tempData;
+    }
   }
   /**
-   * Swap two nodes within the list
+   * Swap two nodes' within the list
    * basically swaps their respective left & right reference
    * @static
    * @param {Node} nodea node to swap
    * @param {Node} nodeb node to swap
    * @memberof DoubleLinkedList
    */
-  static swap(nodea, nodeb) {
-    if (nodea && nodeb) {
-      const lefta = nodea.left;
-      const righta = nodea.right;
-      nodea.left = nodeb.left;
-      nodea.right = nodeb.right;
-      nodeb.left = lefta;
-      nodeb.right = righta;
+  swap(a, b) {
+    this.constructor.swapNodes(a, b);
+    if (a instanceof this.Node && b instanceof this.Node) {
+      // if one of the node is the tail then the other one becomes the tail
+      if (a === this.tail) {
+        this.tail = b;
+      } else if (b === this.tail) {
+        this.tail = a;
+      }
+      // if one of the node is the head then the other becomes the head
+      if (a === this.head) {
+        this.head = b;
+      } else if (b === this.head) {
+        this.head = a;
+      }
     }
+  }
+  /**
+   * Swap two nodes
+   * basically swaps their respective left & right reference
+   * @param {Node} a node to swap
+   * @param {Node} b node to swap
+   * @static
+   * @memberof DoubleLinkedList
+   */
+  static swapNodes(a, b) {
+    if (this.isNode(a) && this.isNode(b) && a !== b) {
+      // keep temp variables of nodea left/right references
+      const lefta = a.left;
+      const righta = a.right;
+      // set nodea right/left refereces to nodeb's (unless we have circular reference meaning nodes are beside each other)
+      a.left = b.left === a ? b : b.left;
+      a.right = b.right === a ? b : b.right;
+      // set nodeb right/left references to nodea's temp vars (unless we have circular reference meaning nodes are beside each other)
+      b.left = lefta === b ? a : lefta;
+      b.right = righta === b ? a : righta;
+      // make sure right/left references of swaped nodes also have their own references to the swap nodes updated
+      if (this.isNode(b.right)) {
+        b.right.left = b;
+      }
+      if (this.isNode(b.left)) {
+        b.left.right = b;
+      }
+      if (this.isNode(a.right)) {
+        a.right.left = a;
+      }
+      if (this.isNode(a.left)) {
+        a.left.right = a;
+      }
+    }
+  }
+  /**
+   * Returns whether or not the passed object can be considered a Node (has a right and left property)
+   * @static
+   * @param {Object} obj Node object to be checked
+   * @returns {Boolean} true or false
+   * @memberof DoubleLinkedList
+   */
+  static isNode(obj) {
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      typeof obj.left !== 'undefined' &&
+      typeof obj.right !== 'undefined'
+    );
+  }
+  /**
+   * Returns the default Node class used when adding new data into the list
+   * @static
+   * @returns {Node} default node class
+   * @memberof DoubleLinkedList
+   */
+  static getDefaultNodeClass() {
+    return Node;
+  }
+  /**
+   * Gets the Node class used in this DoubleLinkedList instance (defaulted to ${link Node} in the constructor)
+   * @returns {Class} node class used in this instance
+   * @memberof DoubleLinkedList
+   */
+  getNodeClass() {
+    return this.Node;
   }
 }
 
