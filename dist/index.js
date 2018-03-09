@@ -164,6 +164,15 @@ class DoubleLinkedList {
     return this.radd(...datas);
   }
   /**
+   * pop last member in the list
+   * alias to {link DoubleLinkedList~rpop}
+   * @returns {Node} poped node
+   * @memberof DoubleLinkedList
+   */
+  pop() {
+    return this.rpop();
+  }
+  /**
    * pops head (most right member) of the list
    * The list's next to last node (if exists) becomes the new tail of the list since returned most right node is removed from list
    * @returns {Node} poped tail node

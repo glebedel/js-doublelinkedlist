@@ -14,7 +14,10 @@ JS DoubleLinkedList implementation
 ```js
 import myModule from 'js-doublelinkedlist'
 
-myModule()
+const list = new DoubleLinkedList()
+list.add('data1');
+list.add'data2');
+list.pop()
 ```
 
 ## API
@@ -32,6 +35,7 @@ myModule()
     -   [removeFirst](#removefirst)
     -   [radd](#radd)
     -   [add](#add)
+    -   [pop](#pop)
     -   [rpop](#rpop)
     -   [removeLast](#removelast)
     -   [getAt](#getat)
@@ -145,6 +149,13 @@ alias to {link DoubleLinkedList~radd}
 -   `data` **any** (s) to be stored into the new node
 
 Returns **[Node](#node)** 
+
+#### pop
+
+pop last member in the list
+alias to {link DoubleLinkedList~rpop}
+
+Returns **[Node](#node)** poped node
 
 #### rpop
 
