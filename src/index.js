@@ -321,8 +321,7 @@ class DoubleLinkedList {
    */
   has(data) {
     // retrieves an array of all Nodes' data presents in the list
-    const values = this.map(node => node.data);
-    return values.includes(data);
+    return [...this.literator()].some(node => node.data === data);
   }
   /**
    * Empties the list (resets the `head` & `tail` to `null` and `length` to `0`)
@@ -372,8 +371,8 @@ class DoubleLinkedList {
    * Swap two nodes' data within the list
    * assigns each nodes' data property to the other one's
    * @static
-   * @param {Node} nodea node to swap
-   * @param {Node} nodeb node to swap
+   * @param {Node} a node to swap
+   * @param {Node} b node to swap
    * @memberof DoubleLinkedList
    */
   swapData(a, b) {
@@ -383,8 +382,8 @@ class DoubleLinkedList {
    * Swap two nodes' data
    * assigns each nodes' data property to the other one's
    * @static
-   * @param {Node} nodea node to swap
-   * @param {Node} nodeb node to swap
+   * @param {Node} a node to swap
+   * @param {Node} b node to swap
    * @memberof DoubleLinkedList
    */
   static swapData(a, b) {
@@ -398,8 +397,8 @@ class DoubleLinkedList {
    * Swap two nodes' within the list
    * basically swaps their respective left & right reference
    * @static
-   * @param {Node} nodea node to swap
-   * @param {Node} nodeb node to swap
+   * @param {Node} a node to swap
+   * @param {Node} b node to swap
    * @memberof DoubleLinkedList
    */
   swap(a, b) {
