@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/js-doublelinkedlist.svg?style=flat-square)](https://npmjs.org/package/js-doublelinkedlist)
 [![Build Status](https://img.shields.io/travis/glebedel/node-lru/master.svg?style=flat-square)](https://travis-ci.org/glebedel/js-doublelinkedlist) [![Coverage Status](https://img.shields.io/codecov/c/github/glebedel/js-doublelinkedlist/master.svg?style=flat-square)](https://codecov.io/gh/glebedel/js-doublelinkedlist/branch/master)
 
-simple LRU cache implementation in nodejs
+JS DoubleLinkedList implementation
 
 ## Install
 
@@ -40,20 +40,47 @@ myModule()
     -   [remove](#remove)
     -   [removeAt](#removeat)
     -   [forEach](#foreach)
+    -   [hasNode](#hasnode)
     -   [has](#has)
+    -   [empty](#empty)
+    -   [reset](#reset)
+    -   [swapDataAt](#swapdataat)
     -   [swapAt](#swapat)
+    -   [swapData](#swapdata)
+    -   [swapData](#swapdata-1)
     -   [swap](#swap)
-    -   [swap](#swap-1)
-    -   [resetLength](#resetlength)
+    -   [swapNodes](#swapnodes)
+    -   [isNode](#isnode)
+    -   [getDefaultNodeClass](#getdefaultnodeclass)
+    -   [getNodeClass](#getnodeclass)
 
 ### Node
 
 Node element of our double linked list
 Contains a left pointer & right pointer as well as data property
+TODO: have a more consistent API (eg consistent return values & consitent names depending on return values being nodes or data)
+
+**Parameters**
+
+-   `data` **any** data stored in the node that can be retrieved through linked list method
+-   `$1` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+    -   `$1.left`   (optional, default `null`)
+    -   `$1.right`   (optional, default `null`)
+-   `pointers` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** pointers object containing reference to left and right nodes (optional, default `{}`)
 
 ### DoubleLinkedList
 
 DoubleLinkedList class
+adding node(radd, ladd): O(1)
+list length retrieval: O(1) - (unless lists' nodes modified outside of class)
+getting/removing nodes or nodes' data apart from head/tail (getAt, getDataAt, removeAt, find, findData...): O(n)
+
+**Parameters**
+
+-   `head` **([Node](#node) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Node](#node)>)** optional reference to head node (optional, default `null`)
+-   `$1` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+    -   `$1.NodeClass`   (optional, default `Node`)
+-   `param` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** optional parameter object (optional, default `{}`)
 
 #### first
 
@@ -75,6 +102,8 @@ Passed data is added into a new node which becomes the head of the list
 **Parameters**
 
 -   `data` **any** 
+-   `otherDatas` **...any** 
+-   `optional` **...any** further datas to add. ladd will be called for each further data passed.
 
 Returns **[Node](#node)** new head (most left member) of the list
 
@@ -100,17 +129,20 @@ Passed data is added into a new node which becomes the tail of the list
 **Parameters**
 
 -   `data` **any** 
+-   `otherDatas` **...any** 
+-   `optional` **...any** further datas to add. radd will be called for each further data passed.
 
 Returns **[Node](#node)** new tail (most right) node of the list
 
 #### add
 
-Sets passed data into a new node and adds node to the right of the list
+Sets passed data(s) into a new node and adds node to the right of the list
 alias to {link DoubleLinkedList~radd}
 
 **Parameters**
 
--   `data` **any** to be stored into the new node
+-   `datas` **...any** 
+-   `data` **any** (s) to be stored into the new node
 
 Returns **[Node](#node)** 
 
@@ -186,6 +218,17 @@ execute fn callback on each node
 
 -   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** function that will be called for each node in the list
 
+#### hasNode
+
+Check if list contains a specific node
+
+**Parameters**
+
+-   `node`  
+-   `data` **any** 
+
+Returns **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true or false
+
 #### has
 
 Check if list contains specific data
@@ -194,7 +237,27 @@ Check if list contains specific data
 
 -   `data` **any** 
 
-Returns **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** whether or not list has a node that contains specified data
+Returns **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true or false
+
+#### empty
+
+Empties the list (resets the `head` & `tail` to `null` and `length` to `0`)
+
+#### reset
+
+recalculate the length of the linked list and re-set the tail (loops from the left to do this therefore)
+this normaly isn't necessary unless list's nodes left/right pointers were modified without using the DoubleLinkedList available methods
+
+Returns **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** difference between old length and recalculated length (negative number means new length > old length)
+
+#### swapDataAt
+
+swap nodes' data at indices indexa & indexb
+
+**Parameters**
+
+-   `indexa` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `indexb` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
 #### swapAt
 
@@ -205,31 +268,67 @@ swap nodes at indices indexa & indexb
 -   `indexa` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 -   `indexb` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
-#### swap
+#### swapData
 
-see {DoubleLinkedList.swap}
+Swap two nodes' data within the list
+assigns each nodes' data property to the other one's
 
 **Parameters**
 
--   `a` **any** 
--   `b` **any** 
+-   `a` **[Node](#node)** node to swap
+-   `b` **[Node](#node)** node to swap
+
+#### swapData
+
+Swap two nodes' data
+assigns each nodes' data property to the other one's
+
+**Parameters**
+
+-   `a` **[Node](#node)** node to swap
+-   `b` **[Node](#node)** node to swap
 
 #### swap
 
-Swap two nodes within the list
+Swap two nodes' within the list
 basically swaps their respective left & right reference
 
 **Parameters**
 
--   `nodea` **[Node](#node)** node to swap
--   `nodeb` **[Node](#node)** node to swap
+-   `a` **[Node](#node)** node to swap
+-   `b` **[Node](#node)** node to swap
 
-#### resetLength
+#### swapNodes
 
-recalculate the length of the linked list
-this normaly isn't necessary unless list's nodes left/right pointers were modified without using the DoubleLinkedList available methods
+Swap two nodes
+basically swaps their respective left & right reference
 
-Returns **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** difference between old length and recalculated length (negative number means new length > old length)
+**Parameters**
+
+-   `a` **[Node](#node)** node to swap
+-   `b` **[Node](#node)** node to swap
+
+#### isNode
+
+Returns whether or not the passed object can be considered a Node (has a right and left property)
+
+**Parameters**
+
+-   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Node object to be checked
+
+Returns **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true or false
+
+#### getDefaultNodeClass
+
+Returns the default Node class used when adding new data into the list
+
+Returns **[Node](#node)** default node class
+
+#### getNodeClass
+
+Gets the Node class used in this DoubleLinkedList instance (defaulted to ${link Node~constructor} in the constructor)
+
+Returns **Class** node class used in this instance
 
 ## License
 

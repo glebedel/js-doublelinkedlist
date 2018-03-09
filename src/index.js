@@ -2,11 +2,13 @@
  * Node element of our double linked list
  * Contains a left pointer & right pointer as well as data property
  * TODO: have a more consistent API (eg consistent return values & consitent names depending on return values being nodes or data)
- * @class Node
+ * @classdesc Node
  */
 class Node {
   /**
    * Creates an instance of Node.
+   * @class Node
+   * @constructs Node
    * @param {any} data data stored in the node that can be retrieved through linked list method
    * @param {Object} [pointers={}] pointers object containing reference to left and right nodes
    * @param {Node} [pointers.left=null] left node reference
@@ -22,18 +24,19 @@ class Node {
 
 /**
  * DoubleLinkedList class
- *
- * @class DoubleLinkedList
+ * adding node(radd, ladd): O(1)
+ * list length retrieval: O(1) - (unless lists' nodes modified outside of class)
+ * getting/removing nodes or nodes' data apart from head/tail (getAt, getDataAt, removeAt, find, findData...): O(n)
+ * @classdesc DoubleLinkedList
  */
 class DoubleLinkedList {
   /**
    * Creates an instance of DoubleLinkedList
-   * adding node(radd, ladd): O(1)
-   * list length retrieval: O(1) - (unless lists' nodes modified outside of class)
-   * getting/removing nodes or nodes' data apart from head/tail (getAt, getDataAt, removeAt, find, findData...): O(n)
+   * @class DoubleLinkedList
+   * @constructs Node
    * @param {Node|Array<Node>} [head=null] optional reference to head node
    * @param {Object} [param={}] optional parameter object
-   * @param {Class} [param.NodeClass=Node] optional Node Class (Node class' constructor needs to be the same as ${link Node~constructr})
+   * @param {Class} [param.NodeClass=Node] optional Node Class (Node class' constructor needs to be the same as ${link Node~constructor})
    * @memberof DoubleLinkedList
    */
   constructor(head = null, { NodeClass = Node } = {}) {
@@ -477,7 +480,7 @@ class DoubleLinkedList {
     return Node;
   }
   /**
-   * Gets the Node class used in this DoubleLinkedList instance (defaulted to ${link Node} in the constructor)
+   * Gets the Node class used in this DoubleLinkedList instance (defaulted to ${link Node~constructor} in the constructor)
    * @returns {Class} node class used in this instance
    * @memberof DoubleLinkedList
    */
