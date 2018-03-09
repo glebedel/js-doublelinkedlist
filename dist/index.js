@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Node element of our double linked list
  * Contains a left pointer & right pointer as well as data property
@@ -160,15 +162,6 @@ class DoubleLinkedList {
    */
   add(...datas) {
     return this.radd(...datas);
-  }
-  /**
-   * pop last member in the list
-   * alias to {link DoubleLinkedList~rpop}
-   * @returns {Node} poped node
-   * @memberof DoubleLinkedList
-   */
-  pop() {
-    return this.rpop();
   }
   /**
    * pops head (most right member) of the list
@@ -472,12 +465,7 @@ class DoubleLinkedList {
    * @memberof DoubleLinkedList
    */
   static isNode(obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      typeof obj.left !== 'undefined' &&
-      typeof obj.right !== 'undefined'
-    );
+    return obj && typeof obj === 'object' && typeof obj.left !== 'undefined' && typeof obj.right !== 'undefined';
   }
   /**
    * Returns the default Node class used when adding new data into the list
