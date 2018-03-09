@@ -16,8 +16,9 @@ import myModule from 'js-doublelinkedlist'
 
 const list = new DoubleLinkedList()
 list.add('data1');
-list.add'data2');
-list.pop()
+list.add('data2');
+list.pop().data === data2 // true
+list.pop().data === data1 // true
 ```
 
 ## API
