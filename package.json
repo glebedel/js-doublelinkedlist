@@ -1,6 +1,6 @@
 {
   "name": "js-doublelinkedlist",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "simple double linked list implementation in javascript",
   "license": "MIT",
   "repository": "glebedel/js-doublelinkedlist",
