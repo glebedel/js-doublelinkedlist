@@ -59,6 +59,25 @@ class DoubleLinkedList {
     }
   }
   /**
+   * Sets passed data(s) into a new node and adds node to the right of the list
+   * alias to {link DoubleLinkedList~radd}
+   * @param {any} data(s) to be stored into the new node
+   * @returns {Node}
+   * @memberof DoubleLinkedList
+   */
+  add(...datas) {
+    return this.radd(...datas);
+  }
+  /**
+   * pop last member in the list
+   * alias to {link DoubleLinkedList~rpop}
+   * @returns {Node} poped node
+   * @memberof DoubleLinkedList
+   */
+  pop() {
+    return this.rpop();
+  }
+  /**
    * Gets the head of the list
    * @returns {Node} head (most left node) of the list
    * @memberof DoubleLinkedList
@@ -117,15 +136,6 @@ class DoubleLinkedList {
     return currentHead;
   }
   /**
-   * Remove first member (head) of the list
-   * alias to {link DoubleLinkedList~lpop}
-   * @returns {Node} removed node
-   * @memberof DoubleLinkedList
-   */
-  removeFirst() {
-    return this.lpop();
-  }
-  /**
    * Add data to the right of the list
    * Passed data is added into a new node which becomes the tail of the list
    * @param {any} data
@@ -152,25 +162,6 @@ class DoubleLinkedList {
     return this.tail;
   }
   /**
-   * Sets passed data(s) into a new node and adds node to the right of the list
-   * alias to {link DoubleLinkedList~radd}
-   * @param {any} data(s) to be stored into the new node
-   * @returns {Node}
-   * @memberof DoubleLinkedList
-   */
-  add(...datas) {
-    return this.radd(...datas);
-  }
-  /**
-   * pop last member in the list
-   * alias to {link DoubleLinkedList~rpop}
-   * @returns {Node} poped node
-   * @memberof DoubleLinkedList
-   */
-  pop() {
-    return this.rpop();
-  }
-  /**
    * pops head (most right member) of the list
    * The list's next to last node (if exists) becomes the new tail of the list since returned most right node is removed from list
    * @returns {Node} poped tail node
@@ -185,6 +176,15 @@ class DoubleLinkedList {
       this.length -= 1;
     }
     return currentTail;
+  }
+  /**
+   * Remove first member (head) of the list
+   * alias to {link DoubleLinkedList~lpop}
+   * @returns {Node} removed node
+   * @memberof DoubleLinkedList
+   */
+  removeFirst() {
+    return this.lpop();
   }
   /**
    * Remove last member (tail) of the list

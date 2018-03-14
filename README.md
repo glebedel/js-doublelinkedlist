@@ -9,7 +9,7 @@ JS DoubleLinkedList implementation
 ## Usage
 
 ```js
-import myModule from 'js-doublelinkedlist'
+import DoubleLinkedList from 'js-doublelinkedlist'
 
 const list = new DoubleLinkedList()
 list.add('data1');
@@ -26,15 +26,15 @@ list.pop().data === data1 // true
 
 -   [Node](#node)
 -   [DoubleLinkedList](#doublelinkedlist)
+    -   [add](#add)
+    -   [pop](#pop)
     -   [first](#first)
     -   [last](#last)
     -   [ladd](#ladd)
     -   [lpop](#lpop)
-    -   [removeFirst](#removefirst)
     -   [radd](#radd)
-    -   [add](#add)
-    -   [pop](#pop)
     -   [rpop](#rpop)
+    -   [removeFirst](#removefirst)
     -   [removeLast](#removelast)
     -   [getAt](#getat)
     -   [getDataAt](#getdataat)
@@ -84,6 +84,25 @@ getting/removing nodes or nodes' data apart from head/tail (getAt, getDataAt, re
     -   `$1.NodeClass`   (optional, default `Node`)
 -   `param` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** optional parameter object (optional, default `{}`)
 
+#### add
+
+Sets passed data(s) into a new node and adds node to the right of the list
+alias to {link DoubleLinkedList~radd}
+
+**Parameters**
+
+-   `datas` **...any** 
+-   `data` **any** (s) to be stored into the new node
+
+Returns **[Node](#node)** 
+
+#### pop
+
+pop last member in the list
+alias to {link DoubleLinkedList~rpop}
+
+Returns **[Node](#node)** poped node
+
 #### first
 
 Gets the head of the list
@@ -116,13 +135,6 @@ The list's 2nd element (if exists) becomes the new head of the list since return
 
 Returns **[Node](#node)** poped node
 
-#### removeFirst
-
-Remove first member (head) of the list
-alias to {link DoubleLinkedList~lpop}
-
-Returns **[Node](#node)** removed node
-
 #### radd
 
 Add data to the right of the list
@@ -136,31 +148,19 @@ Passed data is added into a new node which becomes the tail of the list
 
 Returns **[Node](#node)** new tail (most right) node of the list
 
-#### add
-
-Sets passed data(s) into a new node and adds node to the right of the list
-alias to {link DoubleLinkedList~radd}
-
-**Parameters**
-
--   `datas` **...any** 
--   `data` **any** (s) to be stored into the new node
-
-Returns **[Node](#node)** 
-
-#### pop
-
-pop last member in the list
-alias to {link DoubleLinkedList~rpop}
-
-Returns **[Node](#node)** poped node
-
 #### rpop
 
 pops head (most right member) of the list
 The list's next to last node (if exists) becomes the new tail of the list since returned most right node is removed from list
 
 Returns **[Node](#node)** poped tail node
+
+#### removeFirst
+
+Remove first member (head) of the list
+alias to {link DoubleLinkedList~lpop}
+
+Returns **[Node](#node)** removed node
 
 #### removeLast
 
